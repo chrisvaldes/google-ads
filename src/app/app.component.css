@@ -1,0 +1,69 @@
+.payment-option {
+  cursor: pointer;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px;
+  transition: all 0.3s ease;
+}
+
+.payment-option:hover {
+  border-color: #ff9800;
+  background-color: rgba(255, 152, 0, 0.05);
+}
+
+.payment-option.active {
+  border: 2px solid #ff9800;
+  background-color: rgba(255, 152, 0, 0.1);
+}
+
+.payment-option[data-method="binance"]:hover {
+  border-color: #F3BA2F;
+  background-color: rgba(243, 186, 47, 0.1);
+}
+
+.payment-option[data-method="binance"].active {
+  border: 2px solid #F3BA2F;
+  background-color: rgba(243, 186, 47, 0.2);
+}
+
+.stripe-card-wrapper {
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  padding: 12px;
+  background-color: #fff;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  min-height: 45px;
+  box-sizing: border-box;
+}
+
+.stripe-card-wrapper:focus-within {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.stripe-card-element {
+  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+#card-errors {
+  font-size: 13px;
+  min-height: 20px;
+}
+
+.custom-card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}

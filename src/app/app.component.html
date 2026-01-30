@@ -1,0 +1,194 @@
+<div class="container mt-4">
+  <h2>Connexion Réseaux Sociaux</h2>
+  
+  <!-- Footer avec liens légaux -->
+  <div class="text-center mb-4">
+    <small class="text-muted">
+      <a routerLink="/terms" class="text-decoration-none me-3">Terms of Service</a>
+      <a routerLink="/privacy" class="text-decoration-none">Privacy Policy</a>
+    </small>
+  </div>
+
+  <!-- FACEBOOK SECTION -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h4>📘 Facebook</h4>
+    </div>
+    <div class="card-body">
+      <button class="btn btn-primary mb-3" *ngIf="!isConnected" (click)="login()">
+        Se connecter avec Facebook
+      </button>
+      
+      <div *ngIf="isConnected" class="alert alert-success">
+        ✅ Connecté à Facebook
+      </div>
+
+      <!-- SECTION 1: BUSINESS MANAGERS -->
+      <div *ngIf="isConnected">
+        <h5>Business Managers</h5>
+        <div *ngFor="let b of businesses" class="form-check mb-2">
+          <input class="form-check-input" type="checkbox" [id]="b.id" (change)="toggleBusiness(b.id, $event)">
+          <label class="form-check-label" [for]="b.id">
+            {{ b.name }} ({{ b.id }})
+          </label>
+        </div>
+
+        <button class="btn btn-success mt-3" (click)="validateSelection()" [disabled]="selectedBusinesses.length === 0">
+          Valider la sélection
+        </button>
+      </div>
+
+      <!-- RÉSULTAT BUSINESS MANAGERS SÉLECTIONNÉS -->
+      <div *ngIf="selectedBusinessesData.length > 0">
+        <h5>Business Managers sélectionnés</h5>
+        <div *ngFor="let b of selectedBusinessesData" class="border p-3 mb-2">
+          <h6>{{ b.name }}</h6>
+          <p><strong>ID :</strong> {{ b.id }}</p>
+        </div>
+      </div>
+ 
+      <!-- SECTION 2: SÉLECTION DES PAGES PAR BUSINESS MANAGER -->
+      <div *ngIf="selectedBusinessesData.length > 0">
+        <h5>Sélectionner un Business Manager pour voir ses pages</h5>
+        
+        <div class="mb-3">
+          <select class="form-select" (change)="onBusinessManagerChange($event)" [value]="selectedBusinessManagerId">
+            <option value="">Choisir un business manager...</option>
+            <option *ngFor="let b of selectedBusinessesData" [value]="b.id">
+              {{ b.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- PAGES DU BUSINESS MANAGER SÉLECTIONNÉ -->
+        <div *ngIf="businessPages.length > 0">
+          <h6>Pages de {{ getSelectedBusinessManagerName() }}</h6>
+          <div *ngFor="let p of businessPages" class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" [id]="p.id" (change)="togglePage(p.id, $event)">
+            <label class="form-check-label" [for]="p.id">
+              {{ p.name }} ({{ p.id }})
+            </label>
+          </div>
+
+          <button class="btn btn-primary mt-3" (click)="validatePageSelection()" [disabled]="selectedPages.length === 0">
+            Valider la sélection des pages
+          </button>
+        </div>
+      </div>
+
+      <!-- RÉSULTAT PAGES SÉLECTIONNÉES -->
+      <div *ngIf="selectedPagesData.length > 0">
+        <h5>Pages sélectionnées</h5>
+        <div *ngFor="let p of selectedPagesData" class="border p-3 mb-2">
+          <h6>{{ p.name }}</h6>
+          <p><strong>ID :</strong> {{ p.id }}</p>
+          <p><strong>Business Manager :</strong> {{ p.businessName }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIKTOK SECTION -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h4>🎵 TikTok</h4>
+    </div>
+    <div class="card-body">
+      <button class="btn btn-danger mb-3" *ngIf="!isTikTokConnected" (click)="loginTikTok()">
+        Se connecter avec TikTok
+      </button>
+      
+      <div *ngIf="isTikTokConnected" class="alert alert-success">
+        ✅ Connecté à TikTok
+        <button class="btn btn-sm btn-outline-danger ms-2" (click)="logoutTikTok()">
+          Déconnexion
+        </button>
+      </div>
+
+      <!-- INFORMATIONS UTILISATEUR TIKTOK -->
+      <div *ngIf="isTikTokConnected && tiktokUser">
+        <h5>Informations utilisateur</h5>
+        <div class="border p-3 mb-3">
+          <p><strong>Nom :</strong> {{ tiktokUser.display_name || tiktokUser.name }}</p>
+          <p><strong>ID :</strong> {{ tiktokUser.user_id || tiktokUser.id }}</p>
+          <p><strong>Email :</strong> {{ tiktokUser.email || 'Non disponible' }}</p>
+        </div>
+      </div>
+
+      <!-- COMPTES BUSINESS TIKTOK -->
+      <div *ngIf="isTikTokConnected && tiktokBusinessAccounts.length > 0">
+        <h5>Comptes Business TikTok</h5>
+        <div *ngFor="let account of tiktokBusinessAccounts" class="border p-3 mb-2">
+          <h6>{{ account.name || account.display_name }}</h6>
+          <p><strong>ID :</strong> {{ account.business_id || account.id }}</p>
+          <p><strong>Statut :</strong> {{ account.status || 'Actif' }}</p>
+        </div>
+      </div>
+
+      <div *ngIf="isTikTokConnected && tiktokBusinessAccounts.length === 0" class="alert alert-info">
+        Aucun compte business TikTok trouvé
+      </div>
+    </div>
+  </div>
+  
+  <!-- GOOGLE ADS SECTION -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h4>🔍 Google Ads</h4>
+    </div>
+    <div class="card-body">
+      <button class="btn btn-warning mb-3" *ngIf="!isGoogleAdsConnected" (click)="loginGoogleAds()">
+        Se connecter avec Google Ads
+      </button>
+      
+      <div *ngIf="isGoogleAdsConnected" class="alert alert-success">
+        ✅ Connecté à Google Ads
+        <button class="btn btn-sm btn-outline-warning ms-2" (click)="logoutGoogleAds()">
+          Déconnexion
+        </button>
+        <button class="btn btn-sm btn-outline-info ms-2" (click)="testGoogleAdsApi()">
+          🧪 Tester API
+        </button>
+      </div>
+
+      <!-- INFORMATIONS UTILISATEUR GOOGLE ADS -->
+      <div *ngIf="isGoogleAdsConnected && googleAdsUser">
+        <h5>Informations utilisateur</h5>
+        <div class="border p-3 mb-3">
+          <p><strong>Nom :</strong> {{ googleAdsUser.user?.getName() || 'Utilisateur Google' }}</p>
+          <p><strong>Email :</strong> {{ googleAdsUser.user?.getEmail() || 'Non disponible' }}</p>
+        </div>
+      </div>
+
+      <!-- COMPTES GOOGLE ADS -->
+      <div *ngIf="isGoogleAdsConnected && googleAdsAccounts.length > 0">
+        <h5>Comptes Google Ads</h5>
+        
+        <div class="mb-3">
+          <select class="form-select" (change)="onGoogleAdsAccountChange($event)" [value]="selectedGoogleAdsAccount">
+            <option value="">Choisir un compte Google Ads...</option>
+            <option *ngFor="let account of googleAdsAccounts" [value]="account">
+              {{ account }}
+            </option>
+          </select>
+        </div>
+
+        <!-- CAMPAGNES DU COMPTE SÉLECTIONNÉ -->
+        <div *ngIf="googleAdsCampaigns.length > 0">
+          <h6>Campagnes du compte {{ selectedGoogleAdsAccount }}</h6>
+          <div *ngFor="let campaign of googleAdsCampaigns" class="border p-3 mb-2">
+            <h6>{{ campaign.campaign?.name || 'Campagne sans nom' }}</h6>
+            <p><strong>ID :</strong> {{ campaign.campaign?.id }}</p>
+            <p><strong>Statut :</strong> {{ campaign.campaign?.status || 'Inconnu' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="isGoogleAdsConnected && googleAdsAccounts.length === 0" class="alert alert-info">
+        Aucun compte Google Ads trouvé
+      </div>
+    </div>
+  </div>
+  
+  <router-outlet></router-outlet>
+</div>

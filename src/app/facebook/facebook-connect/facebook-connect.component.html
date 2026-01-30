@@ -1,0 +1,19 @@
+<form (ngSubmit)="submit()">
+
+  <input [(ngModel)]="firstName" name="firstName" placeholder="Prénom">
+  <input [(ngModel)]="lastName" name="lastName" placeholder="Nom">
+
+  <button type="button" (click)="connectFacebook()">
+    Se connecter avec Facebook
+  </button>
+
+  <div *ngFor="let p of pages">
+    <label>
+      <input type="checkbox" [(ngModel)]="p.selected" [name]="p.id">
+      {{ p.name }}
+    </label>
+  </div>
+
+  <button type="submit">Enregistrer</button>
+
+</form>
